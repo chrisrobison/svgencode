@@ -1,0 +1,133 @@
+<html>
+  <head>
+    <title>URL-encoder for SVG</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <div style="display:flex;"><img src="logo.svg" height="100" width="100"><h1>SVG to CSS Encoder</h1></div>
+          <dl class="options">
+            <dt class="expander"><svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com"><defs><bx:grid x="0" y="0" width="26.202" height="26.72"></bx:grid></defs><path style="stroke: rgb(0, 0, 0); fill: rgb(156, 156, 156); stroke-width: 0.413867px;" transform="matrix(0.966495, 0, 0, 0.966495, -156.216878, -138.81995)" d="M 174.369 144.667 L 177.631 144.667 L 178.32 149.65 A 8.667 8.667 0 0 1 180.264 150.455 L 184.275 147.418 L 186.582 149.725 L 183.545 153.736 A 8.667 8.667 0 0 1 184.35 155.68 L 189.333 156.369 L 189.333 159.631 L 184.35 160.32 A 8.667 8.667 0 0 1 183.545 162.264 L 186.582 166.275 L 184.275 168.582 L 180.264 165.545 A 8.667 8.667 0 0 1 178.32 166.35 L 177.631 171.333 L 174.369 171.333 L 173.68 166.35 A 8.667 8.667 0 0 1 171.736 165.545 L 167.725 168.582 L 165.418 166.275 L 168.455 162.264 A 8.667 8.667 0 0 1 167.65 160.32 L 162.667 159.631 L 162.667 156.369 L 167.65 155.68 A 8.667 8.667 0 0 1 168.455 153.736 L 165.418 149.725 L 167.725 147.418 L 171.736 150.455 A 8.667 8.667 0 0 1 173.68 149.65 Z M 176 154 A 4 4 0 0 0 176 162 A 4 4 0 0 0 176 154" bx:shape="cog 176 158 4 8.667 13.333 0.38 8 1@404340dc"></path></svg></dt>
+            <dd class="expanded hidden">
+              Quote Style:
+              <label class="options__label">
+                <input
+                  type="radio"
+                  value="single"
+                  name="quotes"
+                  class="options__input "
+                >
+                <span class="options__text">single (&apos;)</span>
+              </label>
+
+              <span class="options__middle-word">/</span>
+
+              <label class="options__label">
+                <input
+                  type="radio"
+                  value="double"
+                  name="quotes"
+                  class="options__input "
+                  checked
+                >
+                <span class="options__text">double (&quot;)</span>
+              </label>
+              </dd>
+            </dl>
+          <div class="panel" style="display:none;">
+            <dl style="display:none;" class="about">
+              <dt class="expander">About tool</dt>
+              <dd class="expanded hidden">
+              <h2>SVG to CSS Encoder</h2>
+              <p>Modern web standards allow the inclusion of SVG image files directly within CSS via a data URI but requires encoding the SVG content, similar to base64 encoding binary images.
+                SVG images encoded using Javascript's <code>encodeURIComponent()</code> built-in function allow the browser to properly read and render the image. This tool helps you do that.</p>
+              <p>Paste your SVG file and it will be encoded and provided as just the encoded image as well as the complete CSS background text needed to use. A preview of the encoded image is also provided to ensure nothing gets broken in the encoding process.</p>
+              </dd>
+            </dl>
+          </div>
+      </header>
+      <main>
+        <div class="containers">
+          <div class="container container--left container container--init">
+              <h4>Insert your SVG:</h4>
+              <button class="button-example">Example</button>
+              <textarea
+                name="init"
+                id="init"
+                spellcheck="false"
+                ></textarea>
+              <div>
+                - OR -
+                <h4 style="display:inline-block;">Load SVG from URL:</h4>
+                <input type="text" oninput="fetchImage()" id="url"><button id="fetchurl" onclick="fetchImage()">Load</button>
+              </div>
+          </div>
+
+          <div class="container container--right container container--result">
+            <h4>Encoded SVG:</h4>
+            <button onclick="copyText(document.querySelector('#result'));return false" class="button-copy-encoded"><span class="copy"></span> Copy</button>
+            <textarea
+              name="result"
+              id="result"
+              spellcheck="false"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="containers">
+          <div class="container container--left container container--result-css">
+            <h4>Ready for CSS:</h4>
+            <button onclick="copyText(document.querySelector('#result-css'));return false" class="button-copy-encoded"><span class="copy"></span> Copy</button>
+            <textarea
+              name="result-css"
+              id="result-css"
+              spellcheck="false"
+              onfocus="copyText(this)"
+            ></textarea>
+          </div>
+
+          <div class="container container--right container container--demo">
+            <h4>Preview:</h4>
+
+            <div class="contrast-buttons">Background:
+              <button
+                type="button"
+                class="contrast-button contrast-button--transparent"
+                data-color=""
+                title="Transparent">
+                <span class="visuallyhidden">Transparent</span>
+              </button>
+               <button
+                type="button"
+                class="contrast-button contrast-button--white"
+                data-color="white"
+                title="White">
+                <span class="visuallyhidden">White</span>
+              </button>
+              <button
+                type="button"
+                class="contrast-button contrast-button--silver"
+                data-color="silver"
+                title="Silver">
+                <span class="visuallyhidden">Silver</span>
+              </button>
+              <button
+                type="button"
+                class="contrast-button contrast-button--black"
+                data-color="black"
+                title="Black">
+                <span class="visuallyhidden">Black</span>
+              </button>
+            </div>
+
+            <div class="demo-wrapper">
+              <div id="demo" class="demo"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>
