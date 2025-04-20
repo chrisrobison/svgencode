@@ -1,133 +1,733 @@
-<html>
-  <head>
-    <title>URL-encoder for SVG</title>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    <div class="wrapper">
-      <header class="header">
-        <div style="display:flex;"><img src="logo.svg" height="100" width="100"><h1>SVG to CSS Encoder</h1></div>
-          <dl class="options">
-            <dt class="expander"><svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com"><defs><bx:grid x="0" y="0" width="26.202" height="26.72"></bx:grid></defs><path style="stroke: rgb(0, 0, 0); fill: rgb(156, 156, 156); stroke-width: 0.413867px;" transform="matrix(0.966495, 0, 0, 0.966495, -156.216878, -138.81995)" d="M 174.369 144.667 L 177.631 144.667 L 178.32 149.65 A 8.667 8.667 0 0 1 180.264 150.455 L 184.275 147.418 L 186.582 149.725 L 183.545 153.736 A 8.667 8.667 0 0 1 184.35 155.68 L 189.333 156.369 L 189.333 159.631 L 184.35 160.32 A 8.667 8.667 0 0 1 183.545 162.264 L 186.582 166.275 L 184.275 168.582 L 180.264 165.545 A 8.667 8.667 0 0 1 178.32 166.35 L 177.631 171.333 L 174.369 171.333 L 173.68 166.35 A 8.667 8.667 0 0 1 171.736 165.545 L 167.725 168.582 L 165.418 166.275 L 168.455 162.264 A 8.667 8.667 0 0 1 167.65 160.32 L 162.667 159.631 L 162.667 156.369 L 167.65 155.68 A 8.667 8.667 0 0 1 168.455 153.736 L 165.418 149.725 L 167.725 147.418 L 171.736 150.455 A 8.667 8.667 0 0 1 173.68 149.65 Z M 176 154 A 4 4 0 0 0 176 162 A 4 4 0 0 0 176 154" bx:shape="cog 176 158 4 8.667 13.333 0.38 8 1@404340dc"></path></svg></dt>
-            <dd class="expanded hidden">
-              Quote Style:
-              <label class="options__label">
-                <input
-                  type="radio"
-                  value="single"
-                  name="quotes"
-                  class="options__input "
-                >
-                <span class="options__text">single (&apos;)</span>
-              </label>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVG to CSS Encoder</title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2980b9;
+      --background-color: #f5f5f5;
+      --container-color: #ffffff;
+      --text-color: #333333;
+      --border-color: #dddddd;
+    }
 
-              <span class="options__middle-word">/</span>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-              <label class="options__label">
-                <input
-                  type="radio"
-                  value="double"
-                  name="quotes"
-                  class="options__input "
-                  checked
-                >
-                <span class="options__text">double (&quot;)</span>
-              </label>
-              </dd>
-            </dl>
-          <div class="panel" style="display:none;">
-            <dl style="display:none;" class="about">
-              <dt class="expander">About tool</dt>
-              <dd class="expanded hidden">
-              <h2>SVG to CSS Encoder</h2>
-              <p>Modern web standards allow the inclusion of SVG image files directly within CSS via a data URI but requires encoding the SVG content, similar to base64 encoding binary images.
-                SVG images encoded using Javascript's <code>encodeURIComponent()</code> built-in function allow the browser to properly read and render the image. This tool helps you do that.</p>
-              <p>Paste your SVG file and it will be encoded and provided as just the encoded image as well as the complete CSS background text needed to use. A preview of the encoded image is also provided to ensure nothing gets broken in the encoding process.</p>
-              </dd>
-            </dl>
-          </div>
-      </header>
-      <main>
-        <div class="containers">
-          <div class="container container--left container container--init">
-              <h4>Insert your SVG:</h4>
-              <button class="button-example">Example</button>
-              <textarea
-                name="init"
-                id="init"
-                spellcheck="false"
-                ></textarea>
-              <div>
-                - OR -
-                <h4 style="display:inline-block;">Load SVG from URL:</h4>
-                <input type="text" oninput="fetchImage()" id="url"><button id="fetchurl" onclick="fetchImage()">Load</button>
-              </div>
-          </div>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--background-color);
+      padding: 20px;
+    }
 
-          <div class="container container--right container container--result">
-            <h4>Encoded SVG:</h4>
-            <button onclick="copyText(document.querySelector('#result'));return false" class="button-copy-encoded"><span class="copy"></span> Copy</button>
-            <textarea
-              name="result"
-              id="result"
-              spellcheck="false"
-            ></textarea>
+    .wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      margin-bottom: 20px;
+      background-color: var(--container-color);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      margin-right: 15px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: var(--primary-color);
+    }
+
+    h4 {
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .options__label {
+      margin-right: 15px;
+      cursor: pointer;
+    }
+
+    .options__text {
+      margin-left: 5px;
+    }
+
+    .containers {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      flex: 1;
+      min-width: 300px;
+      background-color: var(--container-color);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 200px;
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-family: monospace;
+      resize: vertical;
+      margin-bottom: 15px;
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-bottom: 10px;
+      display: inline-flex;
+      align-items: center;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: var(--secondary-color);
+    }
+
+    .button-example {
+      margin-left: 10px;
+    }
+
+    .button-copy {
+      margin-bottom: 10px;
+    }
+
+    .copy-icon {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin-right: 5px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2'%3E%3C/path%3E%3C/svg%3E");
+      background-size: contain;
+    }
+
+    .url-section {
+      display: flex;
+      align-items: center;
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+
+    .url-separator {
+      margin: 0 10px;
+      font-weight: bold;
+    }
+
+    .url-label {
+      margin-right: 10px;
+    }
+
+    #url {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      margin-right: 10px;
+    }
+
+    .contrast-buttons {
+      margin-bottom: 15px;
+    }
+
+    .contrast-button {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-left: 5px;
+      padding: 0;
+    }
+
+    .contrast-button--transparent {
+      background-color: transparent;
+      background-image: 
+        linear-gradient(45deg, #ccc 25%, transparent 25%), 
+        linear-gradient(-45deg, #ccc 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #ccc 75%), 
+        linear-gradient(-45deg, transparent 75%, #ccc 75%);
+      background-size: 10px 10px;
+      background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+    }
+
+    .contrast-button--white {
+      background-color: white;
+    }
+
+    .contrast-button--silver {
+      background-color: silver;
+    }
+
+    .contrast-button--black {
+      background-color: black;
+    }
+
+    .visuallyhidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    .demo-wrapper {
+      width: 100%;
+      height: 200px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: transparent;
+      background-image: 
+        linear-gradient(45deg, #ccc 25%, transparent 25%), 
+        linear-gradient(-45deg, #ccc 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #ccc 75%), 
+        linear-gradient(-45deg, transparent 75%, #ccc 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    }
+
+    .demo {
+      width: 100px;
+      height: 100px;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+    }
+
+    .error {
+      color: #e74c3c;
+      margin-bottom: 10px;
+    }
+
+    .success {
+      color: #27ae60;
+      margin-bottom: 10px;
+    }
+
+    .about-toggle {
+      cursor: pointer;
+      color: var(--primary-color);
+      margin-top: 10px;
+      display: inline-block;
+    }
+
+    .about-content {
+      margin-top: 15px;
+      padding: 15px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+    }
+
+    .svg-stats {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 14px;
+      color: #888;
+    }
+
+    @media (max-width: 768px) {
+      .containers {
+        flex-direction: column;
+      }
+      
+      .container {
+        min-width: 100%;
+      }
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary-color: #3498db;
+        --secondary-color: #2980b9;
+        --background-color: #222;
+        --container-color: #333;
+        --text-color: #eee;
+        --border-color: #444;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <header class="header">
+      <div class="header-content">
+        <svg class="logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#3498db" d="M17.52,7.02c-1.46-2.42-4.03-3.95-6.97-4C5.14,2.97,0.74,7.15,0.51,12.56c-0.24,5.7,4.33,10.41,9.99,10.41
+          c4.51,0,8.28-2.99,9.51-7.07h-2.1c-1.16,2.93-3.95,5-7.41,5c-4.34,0-7.84-3.54-7.84-7.93s3.5-7.93,7.84-7.93
+          c2.22,0,4.24,0.93,5.67,2.43l-3.07,3.06h7.94v-7.5L17.52,7.02z"/>
+        </svg>
+        <h1>SVG to CSS Encoder</h1>
+      </div>
+      <div class="options">
+        <span>Quote Style:</span>
+        <label class="options__label">
+          <input
+            type="radio"
+            value="single"
+            name="quotes"
+            class="options__input"
+          >
+          <span class="options__text">single (')</span>
+        </label>
+
+        <label class="options__label">
+          <input
+            type="radio"
+            value="double"
+            name="quotes"
+            class="options__input"
+            checked
+          >
+          <span class="options__text">double (")</span>
+        </label>
+
+        <span style="margin-left: 20px;">Minify SVG:</span>
+        <label class="options__label">
+          <input
+            type="checkbox"
+            id="minify"
+            checked
+          >
+          <span class="options__text">optimize SVG</span>
+        </label>
+      </div>
+      <div id="aboutToggle" class="about-toggle">
+        About this tool ▾
+      </div>
+      <div id="aboutContent" class="about-content hidden">
+        <h2>SVG to CSS Encoder</h2>
+        <p>Modern web standards allow the inclusion of SVG image files directly within CSS via a data URI but requires encoding the SVG content, similar to base64 encoding binary images.</p>
+        <p>SVG images encoded using JavaScript's <code>encodeURIComponent()</code> built-in function allow the browser to properly read and render the image. This tool helps you do that.</p>
+        <p>Paste your SVG file and it will be encoded and provided as just the encoded image as well as the complete CSS background text needed to use. A preview of the encoded image is also provided to ensure nothing gets broken in the encoding process.</p>
+        <p>When the "optimize SVG" option is checked, the tool will remove extra whitespace and unnecessary attributes to reduce file size.</p>
+      </div>
+    </header>
+    <main>
+      <div class="containers">
+        <div class="container container--left">
+          <h4>Insert your SVG:</h4>
+          <button id="exampleButton" class="button-example">Example</button>
+          <div id="messageInit" class="hidden"></div>
+          <textarea
+            name="init"
+            id="init"
+            spellcheck="false"
+            placeholder="Paste your SVG code here..."
+          ></textarea>
+          <div class="url-section">
+            <span class="url-separator">- OR -</span>
+            <span class="url-label">Load SVG from URL:</span>
+            <input type="text" id="url" placeholder="https://example.com/image.svg">
+            <button id="fetchUrl">Load</button>
           </div>
+          <div id="svgStats" class="svg-stats"></div>
         </div>
 
-        <div class="containers">
-          <div class="container container--left container container--result-css">
-            <h4>Ready for CSS:</h4>
-            <button onclick="copyText(document.querySelector('#result-css'));return false" class="button-copy-encoded"><span class="copy"></span> Copy</button>
-            <textarea
-              name="result-css"
-              id="result-css"
-              spellcheck="false"
-              onfocus="copyText(this)"
-            ></textarea>
+        <div class="container container--right">
+          <h4>Encoded SVG:</h4>
+          <button id="copyEncoded" class="button-copy">
+            <span class="copy-icon"></span> Copy
+          </button>
+          <div id="messageEncoded" class="hidden"></div>
+          <textarea
+            name="result"
+            id="result"
+            spellcheck="false"
+            placeholder="Encoded SVG will appear here..."
+            readonly
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="containers">
+        <div class="container container--left">
+          <h4>Ready for CSS:</h4>
+          <button id="copyCss" class="button-copy">
+            <span class="copy-icon"></span> Copy
+          </button>
+          <div id="messageCss" class="hidden"></div>
+          <textarea
+            name="result-css"
+            id="result-css"
+            spellcheck="false"
+            placeholder="CSS code will appear here..."
+            readonly
+          ></textarea>
+        </div>
+
+        <div class="container container--right">
+          <h4>Preview:</h4>
+
+          <div class="contrast-buttons">
+            Background:
+            <button
+              type="button"
+              class="contrast-button contrast-button--transparent"
+              data-color=""
+              title="Transparent">
+              <span class="visuallyhidden">Transparent</span>
+            </button>
+            <button
+              type="button"
+              class="contrast-button contrast-button--white"
+              data-color="white"
+              title="White">
+              <span class="visuallyhidden">White</span>
+            </button>
+            <button
+              type="button"
+              class="contrast-button contrast-button--silver"
+              data-color="silver"
+              title="Silver">
+              <span class="visuallyhidden">Silver</span>
+            </button>
+            <button
+              type="button"
+              class="contrast-button contrast-button--black"
+              data-color="black"
+              title="Black">
+              <span class="visuallyhidden">Black</span>
+            </button>
           </div>
 
-          <div class="container container--right container container--demo">
-            <h4>Preview:</h4>
-
-            <div class="contrast-buttons">Background:
-              <button
-                type="button"
-                class="contrast-button contrast-button--transparent"
-                data-color=""
-                title="Transparent">
-                <span class="visuallyhidden">Transparent</span>
-              </button>
-               <button
-                type="button"
-                class="contrast-button contrast-button--white"
-                data-color="white"
-                title="White">
-                <span class="visuallyhidden">White</span>
-              </button>
-              <button
-                type="button"
-                class="contrast-button contrast-button--silver"
-                data-color="silver"
-                title="Silver">
-                <span class="visuallyhidden">Silver</span>
-              </button>
-              <button
-                type="button"
-                class="contrast-button contrast-button--black"
-                data-color="black"
-                title="Black">
-                <span class="visuallyhidden">Black</span>
-              </button>
-            </div>
-
-            <div class="demo-wrapper">
-              <div id="demo" class="demo"></div>
-            </div>
+          <div class="demo-wrapper">
+            <div id="demo" class="demo"></div>
           </div>
         </div>
-      </main>
-    </div>
-    <script src="main.js"></script>
-  </body>
+      </div>
+    </main>
+    <footer class="footer">
+      <p>SVG to CSS Encoder Tool &copy; 2025</p>
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Elements
+      const initTextarea = document.getElementById('init');
+      const resultTextarea = document.getElementById('result');
+      const resultCssTextarea = document.getElementById('result-css');
+      const demoDiv = document.getElementById('demo');
+      const urlInput = document.getElementById('url');
+      const fetchUrlButton = document.getElementById('fetchUrl');
+      const exampleButton = document.getElementById('exampleButton');
+      const minifyCheckbox = document.getElementById('minify');
+      const aboutToggle = document.getElementById('aboutToggle');
+      const aboutContent = document.getElementById('aboutContent');
+      const messageInit = document.getElementById('messageInit');
+      const messageEncoded = document.getElementById('messageEncoded');
+      const messageCss = document.getElementById('messageCss');
+      const svgStats = document.getElementById('svgStats');
+      const copyEncodedButton = document.getElementById('copyEncoded');
+      const copyCssButton = document.getElementById('copyCss');
+      
+      // Quotes options
+      const quoteOptions = document.getElementsByName('quotes');
+      
+      // Contrast buttons
+      const contrastButtons = document.querySelectorAll('.contrast-button');
+      
+      // Example SVG
+      const exampleSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <circle cx="50" cy="50" r="40" stroke="#3498db" stroke-width="4" fill="#2980b9" />
+  <path d="M30,50 L70,50 M50,30 L50,70" stroke="white" stroke-width="8" stroke-linecap="round" />
+</svg>`;
+
+      // Initialize
+      aboutToggle.addEventListener('click', function() {
+        aboutContent.classList.toggle('hidden');
+        aboutToggle.textContent = aboutContent.classList.contains('hidden') 
+          ? 'About this tool ▾' 
+          : 'About this tool ▴';
+      });
+
+      // Handle input change and process SVG
+      function processInput() {
+        const svgCode = initTextarea.value.trim();
+        if (!svgCode) {
+          clearOutputs();
+          return;
+        }
+
+        try {
+          // Validate if it's an SVG
+          if (!svgCode.includes('<svg') || !svgCode.includes('</svg>')) {
+            showError(messageInit, 'Input does not appear to be valid SVG.');
+            clearOutputs();
+            return;
+          }
+
+          // Process SVG
+          const processedSvg = minifyCheckbox.checked ? minifySvg(svgCode) : svgCode;
+          const encodedSvg = encodeURIComponent(processedSvg);
+          const quoteStyle = getSelectedQuoteStyle();
+          const cssCode = `background-image: url(${quoteStyle}data:image/svg+xml,${encodedSvg}${quoteStyle});`;
+          
+          // Update outputs
+          resultTextarea.value = encodedSvg;
+          resultCssTextarea.value = cssCode;
+          demoDiv.style.backgroundImage = `url("data:image/svg+xml,${encodedSvg}")`;
+          
+          // Update SVG stats
+          updateSvgStats(svgCode, processedSvg, encodedSvg);
+          
+          hideMessage(messageInit);
+          hideMessage(messageEncoded);
+          hideMessage(messageCss);
+        } catch (error) {
+          showError(messageInit, 'Error processing SVG: ' + error.message);
+          clearOutputs();
+        }
+      }
+
+      // Minify SVG
+      function minifySvg(svg) {
+        // Basic minification - remove comments, extra whitespace, and newlines
+        let minified = svg
+          .replace(/<!--[\s\S]*?-->/g, '') // Remove comments
+          .replace(/>\s+</g, '><') // Remove whitespace between tags
+          .replace(/\s{2,}/g, ' ') // Collapse multiple spaces
+          .replace(/[\r\n\t]/g, '') // Remove newlines and tabs
+          .trim();
+          
+        // Remove unnecessary attributes (width/height if viewBox exists)
+        if (minified.includes('viewBox')) {
+          minified = minified
+            .replace(/\s+width=(['"]).*?\1/g, '')
+            .replace(/\s+height=(['"]).*?\1/g, '');
+        }
+        
+        return minified;
+      }
+
+      // Clear outputs
+      function clearOutputs() {
+        resultTextarea.value = '';
+        resultCssTextarea.value = '';
+        demoDiv.style.backgroundImage = '';
+        svgStats.textContent = '';
+      }
+
+      // Update SVG statistics
+      function updateSvgStats(original, processed, encoded) {
+        const originalSize = new Blob([original]).size;
+        const processedSize = new Blob([processed]).size;
+        const encodedSize = new Blob([encoded]).size;
+        const savings = originalSize - processedSize;
+        
+        svgStats.innerHTML = `
+          Original size: ${formatBytes(originalSize)}<br>
+          ${minifyCheckbox.checked ? `Optimized size: ${formatBytes(processedSize)} (saved ${formatBytes(savings)})` : ''}<br>
+          Encoded size: ${formatBytes(encodedSize)}
+        `;
+      }
+
+      // Format bytes to human-readable format
+      function formatBytes(bytes, decimals = 2) {
+        if (bytes === 0) return '0 Bytes';
+
+        const k = 1024;
+        const dm = decimals < 0 ? 0 : decimals;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+      }
+
+      // Get selected quote style
+      function getSelectedQuoteStyle() {
+        for (const option of quoteOptions) {
+          if (option.checked) {
+            return option.value === 'single' ? "'" : '"';
+          }
+        }
+        return '"'; // Default to double quotes
+      }
+
+      // Show error message
+      function showError(element, message) {
+        element.classList.remove('hidden', 'success');
+        element.classList.add('error');
+        element.textContent = message;
+      }
+
+      // Show success message
+      function showSuccess(element, message) {
+        element.classList.remove('hidden', 'error');
+        element.classList.add('success');
+        element.textContent = message;
+        
+        // Hide after 3 seconds
+        setTimeout(() => {
+          element.classList.add('hidden');
+        }, 3000);
+      }
+
+      // Hide message
+      function hideMessage(element) {
+        element.classList.add('hidden');
+      }
+
+      // Copy text to clipboard
+      function copyToClipboard(text, messageElement) {
+        navigator.clipboard.writeText(text).then(
+          function() {
+            showSuccess(messageElement, 'Copied to clipboard!');
+          },
+          function(err) {
+            showError(messageElement, 'Could not copy: ' + err);
+          }
+        );
+      }
+
+      // Fetch SVG from URL
+      async function fetchSvgFromUrl() {
+        const url = urlInput.value.trim();
+        if (!url) {
+          showError(messageInit, 'Please enter a URL.');
+          return;
+        }
+
+        try {
+          showSuccess(messageInit, 'Fetching SVG...');
+          
+          const response = await fetch(url);
+          
+          if (!response.ok) {
+            showError(messageInit, `Failed to fetch: ${response.status} ${response.statusText}`);
+            return;
+          }
+          
+          const contentType = response.headers.get('content-type');
+          if (contentType && !contentType.includes('svg')) {
+            showError(messageInit, 'Warning: URL may not point to an SVG file.');
+          }
+          
+          const svgText = await response.text();
+          
+          if (!svgText.includes('<svg') || !svgText.includes('</svg>')) {
+            showError(messageInit, 'The fetched content does not appear to be valid SVG.');
+            return;
+          }
+          
+          initTextarea.value = svgText;
+          processInput();
+          showSuccess(messageInit, 'SVG loaded successfully!');
+        } catch (error) {
+          showError(messageInit, `Error fetching SVG: ${error.message}`);
+        }
+      }
+
+      // Event Listeners
+      initTextarea.addEventListener('input', processInput);
+      initTextarea.addEventListener('paste', () => {
+        // Short delay to allow paste to complete
+        setTimeout(processInput, 10);
+      });
+      
+      fetchUrlButton.addEventListener('click', fetchSvgFromUrl);
+      urlInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          fetchSvgFromUrl();
+        }
+      });
+      
+      exampleButton.addEventListener('click', function() {
+        initTextarea.value = exampleSvg;
+        processInput();
+      });
+      
+      minifyCheckbox.addEventListener('change', processInput);
+      
+      copyEncodedButton.addEventListener('click', function() {
+        if (resultTextarea.value) {
+          copyToClipboard(resultTextarea.value, messageEncoded);
+        }
+      });
+      
+      copyCssButton.addEventListener('click', function() {
+        if (resultCssTextarea.value) {
+          copyToClipboard(resultCssTextarea.value, messageCss);
+        }
+      });
+      
+      // Update quote style when radio changes
+      for (const option of quoteOptions) {
+        option.addEventListener('change', function() {
+          processInput();
+        });
+      }
+      
+      // Background color preview buttons
+      contrastButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const color = this.getAttribute('data-color');
+          document.querySelector('.demo-wrapper').style.backgroundColor = color;
+        });
+      });
+
+      // Initialize with example if textarea is empty
+      if (!initTextarea.value) {
+        // Uncomment to automatically load the example on page load
+        // initTextarea.value = exampleSvg;
+        // processInput();
+      }
+    });
+  </script>
+</body>
 </html>
